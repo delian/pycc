@@ -13,6 +13,7 @@ llvmlite = "^0.43.0"
 
 [tool.poetry.scripts]
 run = "pycc:main"
+cc = "cc:main"
 
 [build-system]
 requires = ["poetry-core"]

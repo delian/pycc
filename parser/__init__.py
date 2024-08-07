@@ -42,7 +42,6 @@ def p_term_div(p):
     """term : term DIVIDE factor"""
     p[0] = Node("DIVIDE", [p[1], p[3]], p[2])
 
-
 def p_term_factor(p):
     """term : factor"""
     p[0] = Node("FACTOR", [p[1]])

@@ -8,12 +8,14 @@ from parser import parsed
 def compile_module():
     print(parsed)
 
+    triple = llvm.get_default_triple()  # Get the default triple
+
     module = ir.Module(
         "main"
     )  # Name of the module (we have only one module in this moment)
     # builder = ir.IRBuilder()  # Builder to create instructions
     #
-    module.triple = llvm.get_default_triple()  # Set the triple of the module
+    module.triple = triple
 
     fnty = ir.FunctionType(
         ir.IntType(32), []
@@ -28,9 +30,10 @@ def compile_module():
         ir.Constant(ir.IntType(32), 33)
     )  # Return 33 as a test that the builder works
 
-    triple = llvm.get_default_triple()  # Get the default triple
-    # print(str(module))  # Print the module
-    # print(str(triple))  # Check triple
+    with open("out.ll", "w") as f:
+        f.write(str(module))
+
+    # Lets create an execution engine
 
     llvm.initialize()  # Initialize the llvm
     llvm.initialize_native_target()  # Initialize the native target
@@ -39,7 +42,7 @@ def compile_module():
 
     llvm_parsed = llvm.parse_assembly(str(module))  # Parse the module
     llvm_parsed.verify()  # Verify the module
-    print(llvm_parsed)  # Print the parsed module
+    # print(llvm_parsed)  # Print the parsed module
 
     target_machine = llvm.Target.from_triple(
         triple
@@ -54,9 +57,6 @@ def compile_module():
     func_ptr = engine.get_function_address("main")  # Get the function address
     cfunc = CFUNCTYPE(c_int)(func_ptr)  # Create a cfunc
     print(cfunc())  # Print the result of the cfunc
-
-    with open("out.ll", "w") as f:
-        f.write(str(module))
 
 
 def main():

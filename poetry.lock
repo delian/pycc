@@ -31,6 +31,20 @@ files = [
 ]
 
 [[package]]
+name = "mlir"
+version = "0.0.1"
+description = "mlir"
+optional = false
+python-versions = ">=3.11"
+files = [
+    {file = "mlir-0.0.1-py3-none-any.whl", hash = "sha256:5dd5710d833c3a29c9c368960da920ed64246812cf8b468c6c49da6dc8efa3d3"},
+    {file = "mlir-0.0.1.tar.gz", hash = "sha256:2babfaaf2a16438f9254adbc9a1acd2dd6fa4cc5e3afdc2508ab4fb44a059844"},
+]
+
+[package.extras]
+dev = ["pytest (>=7.3.0)"]
+
+[[package]]
 name = "ply"
 version = "3.11"
 description = "Python Lex & Yacc"
@@ -44,4 +58,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "13aff7f5806b7bc898999f2d120f3f1443e2eba22780726dcc09f4f583ae98e4"
+content-hash = "798f7cff22567ee158bc9cb5f7edf6b01db7ad9f19fe71739f3eadea957d1dcb"

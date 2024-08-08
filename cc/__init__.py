@@ -2,12 +2,18 @@ import llvmlite.ir as ir
 import llvmlite.binding as llvm
 from ctypes import CFUNCTYPE, c_int
 
+from parser import parsed
+
 
 def compile_module():
+    print(parsed)
+
     module = ir.Module(
         "main"
     )  # Name of the module (we have only one module in this moment)
     # builder = ir.IRBuilder()  # Builder to create instructions
+    #
+    module.triple = llvm.get_default_triple()  # Set the triple of the module
 
     fnty = ir.FunctionType(
         ir.IntType(32), []
@@ -30,21 +36,28 @@ def compile_module():
     llvm.initialize_native_target()  # Initialize the native target
     llvm.initialize_native_asmprinter()  # Initialize the native asm printer
     llvm.initialize_native_asmparser()  # Initialize the native asm parser
-    
+
     llvm_parsed = llvm.parse_assembly(str(module))  # Parse the module
     llvm_parsed.verify()  # Verify the module
     print(llvm_parsed)  # Print the parsed module
-    
-    target_machine = llvm.Target.from_triple(triple).create_target_machine()  # Create a target machine
-    engine = llvm.create_mcjit_compiler(llvm_parsed, target_machine)  # Create a MCJIT compiler
+
+    target_machine = llvm.Target.from_triple(
+        triple
+    ).create_target_machine()  # Create a target machine
+    engine = llvm.create_mcjit_compiler(
+        llvm_parsed, target_machine
+    )  # Create a MCJIT compiler
     # engine.add_module(llvm_parsed)  # Add the module to the engine
     engine.finalize_object()  # Finalize the object
     engine.run_static_constructors()  # Run the static constructors
-    
+
     func_ptr = engine.get_function_address("main")  # Get the function address
     cfunc = CFUNCTYPE(c_int)(func_ptr)  # Create a cfunc
     print(cfunc())  # Print the result of the cfunc
-    
+
+    with open("out.ll", "w") as f:
+        f.write(str(module))
+
 
 def main():
     compile_module()

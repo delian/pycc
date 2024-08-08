@@ -42,6 +42,7 @@ def p_term_div(p):
     """term : term DIVIDE factor"""
     p[0] = Node("DIVIDE", [p[1], p[3]], p[2])
 
+
 def p_term_factor(p):
     """term : factor"""
     p[0] = Node("FACTOR", [p[1]])
@@ -64,6 +65,10 @@ def p_error(p):
 
 lex.lex(module=tokenization)
 parser = yacc.yacc()
+
+s = """2*3+(3-5*(4*5))"""
+
+parsed = parser.parse(s)
 
 
 def run():

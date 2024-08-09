@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'DIVIDE LPAREN MINUS NUMBER PLUS RPAREN TIMESexpression : expression PLUS termexpression : expression MINUS termexpression : termterm : term TIMES factorterm : term DIVIDE factorterm : factorfactor : NUMBERfactor : LPAREN expression RPAREN'
+_lr_signature = "NAME NUMBERprogram : functions\n    | glob_variables ';' functions\n    glob_variables : glob_variable\n    | glob_variables ';' glob_variableglob_variable : NAME '=' expressionfunctions : function\n    | functions ';' functionfunction : NAME '(' ')' blockblock : '{' statements '}'\n    | '{' statements ';' '}'\n    | '{' '}'\n    statements : statement\n    | statements ';' statementstatement : expression\n    | var_assignvar_assign : NAME '=' expressionexpression : expression '+' term\n               | expression '-' term\n    term : term '*' factor\n         | term '/' factor\n    expression : termterm : factorfactor : NUMBERfactor : NAMEfactor : '(' expression ')'"
     
-_lr_action_items = {'NUMBER':([0,5,6,7,8,9,],[4,4,4,4,4,4,]),'LPAREN':([0,5,6,7,8,9,],[5,5,5,5,5,5,]),'$end':([1,2,3,4,11,12,13,14,15,],[0,-3,-6,-7,-1,-2,-4,-5,-8,]),'PLUS':([1,2,3,4,10,11,12,13,14,15,],[6,-3,-6,-7,6,-1,-2,-4,-5,-8,]),'MINUS':([1,2,3,4,10,11,12,13,14,15,],[7,-3,-6,-7,7,-1,-2,-4,-5,-8,]),'RPAREN':([2,3,4,10,11,12,13,14,15,],[-3,-6,-7,15,-1,-2,-4,-5,-8,]),'TIMES':([2,3,4,11,12,13,14,15,],[8,-6,-7,8,8,-4,-5,-8,]),'DIVIDE':([2,3,4,11,12,13,14,15,],[9,-6,-7,9,9,-4,-5,-8,]),}
+_lr_action_items = {'NAME':([0,7,8,10,22,24,25,26,27,28,42,43,],[6,12,15,17,17,35,17,17,17,17,35,17,]),'$end':([1,2,4,11,13,23,31,41,44,],[0,-1,-6,-7,-2,-8,-11,-9,-10,]),';':([2,3,4,5,11,13,14,17,18,19,20,21,23,30,31,32,33,34,35,36,37,38,39,40,41,44,45,46,],[7,8,-6,-3,-7,7,-4,-24,-5,-21,-22,-23,-8,42,-11,-12,-14,-15,-24,-17,-18,-19,-20,-25,-9,-10,-13,-16,]),'(':([6,10,12,15,22,24,25,26,27,28,42,43,],[9,22,9,9,22,22,22,22,22,22,22,22,]),'=':([6,15,35,],[10,10,43,]),')':([9,17,19,20,21,29,36,37,38,39,40,],[16,-24,-21,-22,-23,40,-17,-18,-19,-20,-25,]),'NUMBER':([10,22,24,25,26,27,28,42,43,],[21,21,21,21,21,21,21,21,21,]),'{':([16,],[24,]),'*':([17,19,20,21,35,36,37,38,39,40,],[-24,27,-22,-23,-24,27,27,-19,-20,-25,]),'/':([17,19,20,21,35,36,37,38,39,40,],[-24,28,-22,-23,-24,28,28,-19,-20,-25,]),'+':([17,18,19,20,21,29,33,35,36,37,38,39,40,46,],[-24,25,-21,-22,-23,25,25,-24,-17,-18,-19,-20,-25,25,]),'-':([17,18,19,20,21,29,33,35,36,37,38,39,40,46,],[-24,26,-21,-22,-23,26,26,-24,-17,-18,-19,-20,-25,26,]),'}':([17,19,20,21,24,30,32,33,34,35,36,37,38,39,40,42,45,46,],[-24,-21,-22,-23,31,41,-12,-14,-15,-24,-17,-18,-19,-20,-25,44,-13,-16,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expression':([0,5,],[1,10,]),'term':([0,5,6,7,],[2,2,11,12,]),'factor':([0,5,6,7,8,9,],[3,3,3,3,13,14,]),}
+_lr_goto_items = {'program':([0,],[1,]),'functions':([0,8,],[2,13,]),'glob_variables':([0,],[3,]),'function':([0,7,8,],[4,11,4,]),'glob_variable':([0,8,],[5,14,]),'expression':([10,22,24,42,43,],[18,29,33,33,46,]),'term':([10,22,24,25,26,42,43,],[19,19,19,36,37,19,19,]),'factor':([10,22,24,25,26,27,28,42,43,],[20,20,20,20,20,38,39,20,20,]),'block':([16,],[23,]),'statements':([24,],[30,]),'statement':([24,42,],[32,45,]),'var_assign':([24,42,],[34,34,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,13 +26,30 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> expression","S'",1,None,None,None),
-  ('expression -> expression PLUS term','expression',3,'p_expression_plus','__init__.py',16),
-  ('expression -> expression MINUS term','expression',3,'p_expression_minus','__init__.py',21),
-  ('expression -> term','expression',1,'p_expression_term','__init__.py',26),
-  ('term -> term TIMES factor','term',3,'p_term_times','__init__.py',31),
-  ('term -> term DIVIDE factor','term',3,'p_term_div','__init__.py',36),
-  ('term -> factor','term',1,'p_term_factor','__init__.py',41),
-  ('factor -> NUMBER','factor',1,'p_factor_num','__init__.py',46),
-  ('factor -> LPAREN expression RPAREN','factor',3,'p_factor_expr','__init__.py',51),
+  ("S' -> program","S'",1,None,None,None),
+  ('program -> functions','program',1,'p_program','__init__.py',25),
+  ('program -> glob_variables ; functions','program',3,'p_program','__init__.py',26),
+  ('glob_variables -> glob_variable','glob_variables',1,'p_glob_variables','__init__.py',32),
+  ('glob_variables -> glob_variables ; glob_variable','glob_variables',3,'p_glob_variables','__init__.py',33),
+  ('glob_variable -> NAME = expression','glob_variable',3,'p_glob_variable','__init__.py',41),
+  ('functions -> function','functions',1,'p_functions','__init__.py',46),
+  ('functions -> functions ; function','functions',3,'p_functions','__init__.py',47),
+  ('function -> NAME ( ) block','function',4,'p_function','__init__.py',55),
+  ('block -> { statements }','block',3,'p_block','__init__.py',60),
+  ('block -> { statements ; }','block',4,'p_block','__init__.py',61),
+  ('block -> { }','block',2,'p_block','__init__.py',62),
+  ('statements -> statement','statements',1,'p_statements','__init__.py',71),
+  ('statements -> statements ; statement','statements',3,'p_statements','__init__.py',72),
+  ('statement -> expression','statement',1,'p_statement','__init__.py',80),
+  ('statement -> var_assign','statement',1,'p_statement','__init__.py',81),
+  ('var_assign -> NAME = expression','var_assign',3,'p_var_assign','__init__.py',86),
+  ('expression -> expression + term','expression',3,'p_expression','__init__.py',91),
+  ('expression -> expression - term','expression',3,'p_expression','__init__.py',92),
+  ('term -> term * factor','term',3,'p_expression','__init__.py',93),
+  ('term -> term / factor','term',3,'p_expression','__init__.py',94),
+  ('expression -> term','expression',1,'p_expression_term','__init__.py',108),
+  ('term -> factor','term',1,'p_term_factor','__init__.py',113),
+  ('factor -> NUMBER','factor',1,'p_factor_num','__init__.py',118),
+  ('factor -> NAME','factor',1,'p_factor_variable','__init__.py',123),
+  ('factor -> ( expression )','factor',3,'p_factor_expr','__init__.py',128),
 ]

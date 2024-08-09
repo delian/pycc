@@ -1,12 +1,11 @@
-tokens = ("NUMBER", "PLUS", "MINUS", "TIMES", "DIVIDE", "LPAREN", "RPAREN")
+tokens = (
+    "NUMBER",
+    "NAME",
+)
 
-t_PLUS = r"\+"
-t_MINUS = r"-"
-t_TIMES = r"\*"
-t_DIVIDE = r"/"
-t_LPAREN = r"\("
-t_RPAREN = r"\)"
+t_NAME = r"[a-zA-Z_][a-zA-Z0-9_]*"
 
+literals = ["=", "+", "-", "*", "/", "(", ")", "{", "}", ";"]
 
 t_ignore = " \t"
 t_ignore_COMMENT = r"\#.*"

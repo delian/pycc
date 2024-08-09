@@ -9,8 +9,6 @@ readme = "README.md"
 python = "^3.12"
 ply = "^3.11"
 llvmlite = "^0.43.0"
-mlir = "^0.0.1"
-
 
 [tool.poetry.scripts]
 run = "pycc:main"

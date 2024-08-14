@@ -86,8 +86,8 @@ def p_statement(p):
 
 
 def p_var_declare(p):
-    """var_declare : LET NAME '=' expression"""
-    p[0] = Node("VAR_DECLARE", [p[4]], p[2])
+    """var_declare : LET NAME"""  # no expression yet
+    p[0] = Node("VAR_DECLARE", [], p[2])
 
 
 def p_var_assign(p):
@@ -95,11 +95,20 @@ def p_var_assign(p):
     p[0] = Node("VAR_ASSIGN", [p[3]], p[1])
 
 
+def p_function_call(p):
+    """function_call : NAME '(' ')'"""
+    p[0] = Node("FUNCTION_CALL", [], p[1])
+
+
 def p_expression(p):
     """expression : expression '+' term
-               | expression '-' term
+            | expression '-' term
+            | expression '+' function_call
+            | expression '-' function_call
     term : term '*' factor
          | term '/' factor
+         | term '*' function_call
+         | term '/' function_call
     """
     match p[2]:
         case "+":

@@ -12,6 +12,7 @@ class Compiler:
         self.triple = llvm.get_default_triple()
         self.module = {}
         self.func = []
+        self.f = {}
         self.block = []
         self.var = {}  # Needs to be made function unique
 
@@ -27,6 +28,7 @@ class Compiler:
             case "FUNCTION":
                 fnty = ir.FunctionType(ir.IntType(32), [])
                 self.func.append(ir.Function(module, fnty, name=node.leaf))
+                self.f[node.leaf] = self.func[-1]
                 self.compile(node.children[0], module=module)
             case "BLOCK":
                 self.block.append(self.func[-1].append_basic_block())
@@ -73,6 +75,8 @@ class Compiler:
                 return self.compile(node.children[0], module=module)
             case "EXPRESSION":
                 return self.compile(node.children[0], module=module)
+            case "FUNCTION_CALL":
+                return self.builder[-1].call(self.f[node.leaf], [], tail="tail")
             case "NUMBER":
                 breakpoint()
                 return ir.Constant(ir.IntType(32), int(node.leaf))
@@ -115,10 +119,9 @@ class Compiler:
         print("result of execution", cfunc())  # Print the result of the cfunc
 
 
-s = "main() { a = 1 + 3 }"
+s = "main() { let a = 1 + 3 }"
 
 
 def main():
     c = Compiler(s)
-    c.compile_module
     c.compile_module(parse(s))

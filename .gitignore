@@ -1,1 +1,4 @@
 __pycache__/
+parser/parser.out
+parser/parsetab.py
+.vscode/

@@ -82,6 +82,7 @@ def p_statement(p):
     | var_assign
     | function_call
     | expression
+    | block
     """
     p[0] = Node("STATEMENT", [p[1]])
 

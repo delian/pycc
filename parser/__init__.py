@@ -78,9 +78,10 @@ def p_statements(p):
 
 
 def p_statement(p):
-    """statement : expression
-    | var_declare
+    """statement : var_declare
     | var_assign
+    | function_call
+    | expression
     """
     p[0] = Node("STATEMENT", [p[1]])
 
@@ -89,7 +90,10 @@ def p_var_declare(p):
     """var_declare : LET NAME
     | LET NAME '=' expression
     """  # no expression yet
-    p[0] = Node("VAR_DECLARE", [], p[2])
+    if len(p) < 4:
+        p[0] = Node("VAR_DECLARE", [], p[2])
+    else:
+        p[0] = Node("VAR_DECLARE", [p[4]], p[2])
 
 
 def p_var_assign(p):

@@ -1,18 +1,21 @@
 __all__ = ["tokens"]
 
-tokens = (
-    "NUMBER",
-    "NAME",
-    "LET",
-)
+reserved = {
+    "let": "LET",
+}
 
-t_LET = r"let"
-t_NAME = r"[a-zA-Z_][a-zA-Z0-9_]*"
+tokens = ["NUMBER", "NAME"] + list(reserved.values())
 
-literals = ["=", "+", "-", "*", "/", "(", ")", "{", "}", ";"]
+literals = ["=", "+", "-", "*", "/", "(", ")", "{", "}", ";", "$"]
 
 t_ignore = " \t"
 t_ignore_COMMENT = r"\/\/.*"
+
+
+def t_NAME(t):
+    r"[a-zA-Z_][a-zA-Z0-9_]*"
+    t.type = reserved.get(t.value, "NAME")
+    return t
 
 
 def t_NUMBER(t):

@@ -86,7 +86,9 @@ def p_statement(p):
 
 
 def p_var_declare(p):
-    """var_declare : LET NAME"""  # no expression yet
+    """var_declare : LET NAME
+    | LET NAME '=' expression
+    """  # no expression yet
     p[0] = Node("VAR_DECLARE", [], p[2])
 
 

@@ -1,8 +1,6 @@
 import llvmlite.ir as ir
 import llvmlite.binding as llvm
 from ctypes import CFUNCTYPE, c_int
-
-from distutils.command import build
 from parser import parse
 
 

@@ -15,23 +15,23 @@ class Compiler:
         self.block = []
         self.var = {}  # Needs to be made function unique
 
-    def compile(self, node, name=""):
+    def compile(self, node, module=None, name=""):
         print("--->", str(node))
 
         match node.type:
             case "PROGRAM":
-                return self.compile(node.children[0])
+                return self.compile(node.children[0], module=module)
             case "FUNCTIONS":
                 for child in node.children:
-                    self.compile(child)
+                    self.compile(child, module=module)
             case "FUNCTION":
                 fnty = ir.FunctionType(ir.IntType(32), [])
-                self.func.append(ir.Function(self.module, fnty, name=node.leaf))
-                self.compile(node.children[0])
+                self.func.append(ir.Function(module, fnty, name=node.leaf))
+                self.compile(node.children[0], module=module)
             case "BLOCK":
                 self.block.append(self.func[-1].append_basic_block())
                 self.builder.append(ir.IRBuilder(self.block[-1]))
-                self.compile(node.children[0])
+                self.compile(node.children[0], module=module)
                 self.builder[-1].ret(
                     ir.Constant(ir.IntType(32), 33)
                 )  # I need to find a way to find the last expression for return value
@@ -39,48 +39,49 @@ class Compiler:
                 self.block.pop()
             case "STATEMENTS":
                 for child in node.children:
-                    self.compile(child)
+                    self.compile(child, module=module)
             case "STATEMENT":
-                self.compile(node.children[0])
+                self.compile(node.children[0], module=module)
             case "VAR_DECLARE":
                 self.var[node.leaf] = self.builder[-1].alloca(
                     ir.IntType(32), name=node.leaf
                 )
-                self.compile(node.children[0])
+                self.compile(node.children[0], module=module)
             case "VAR_ASSIGN":
-                self.builder[-1].store(
-                    self.compile(node.children[0]), self.var[node.leaf]
-                )
+                expr = self.compile(node.children[0], module=module)
+                self.builder[-1].store(expr, self.var[node.leaf])
+                return expr
             case "PLUS":
-                left = self.compile(node.children[0])
-                right = self.compile(node.children[1])
+                left = self.compile(node.children[0], module=module)
+                right = self.compile(node.children[1], module=module)
                 return self.builder[-1].add(left, right)
             case "MINUS":
-                left = self.compile(node.children[0])
-                right = self.compile(node.children[1])
+                left = self.compile(node.children[0], module=module)
+                right = self.compile(node.children[1], module=module)
                 return self.builder[-1].sub(left, right)
             case "MULTIPLY":
-                left = self.compile(node.children[0])
-                right = self.compile(node.children[1])
+                left = self.compile(node.children[0], module=module)
+                right = self.compile(node.children[1], module=module)
                 return self.builder[-1].mul(left, right)
             case "DIVIDE":
-                left = self.compile(node.children[0])
-                right = self.compile(node.children[1])
+                left = self.compile(node.children[0], module=module)
+                right = self.compile(node.children[1], module=module)
                 return self.builder[-1].sdiv(left, right)
             case "TERM":
-                return self.compile(node.children[0])
+                return self.compile(node.children[0], module=module)
             case "FACTOR":
-                return self.compile(node.children[0])
+                return self.compile(node.children[0], module=module)
             case "EXPRESSION":
-                return self.compile(node.children[0])
+                return self.compile(node.children[0], module=module)
             case "NUMBER":
+                breakpoint()
                 return ir.Constant(ir.IntType(32), int(node.leaf))
 
     def compile_module(self, parsed, name="main"):
         print(parsed)
 
         self.module[name] = ir.Module(name)
-        self.compile(parsed)
+        self.compile(parsed, module=self.module[name])
 
         print(str(self.module[name]))
         with open("name.ll", "w") as f:

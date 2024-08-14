@@ -2,6 +2,7 @@ import llvmlite.ir as ir
 import llvmlite.binding as llvm
 from ctypes import CFUNCTYPE, c_int
 from parser import parse
+import readline
 
 
 class Compiler:
@@ -48,7 +49,9 @@ class Compiler:
                 self.var[node.leaf] = self.builder[-1].alloca(
                     ir.IntType(32), name=node.leaf
                 )
-                self.compile(node.children[0], module=module)
+                if len(node.children) > 0:
+                    expr = self.compile(node.children[0], module=module)
+                    self.builder[-1].store(expr, self.var[node.leaf])
             case "VAR_ASSIGN":
                 expr = self.compile(node.children[0], module=module)
                 self.builder[-1].store(expr, self.var[node.leaf])
@@ -78,7 +81,7 @@ class Compiler:
             case "FUNCTION_CALL":
                 return self.builder[-1].call(self.f[node.leaf], [], tail="tail")
             case "NUMBER":
-                breakpoint()
+                # breakpoint()
                 return ir.Constant(ir.IntType(32), int(node.leaf))
 
     def compile_module(self, parsed, name="main"):
@@ -88,7 +91,7 @@ class Compiler:
         self.compile(parsed, module=self.module[name])
 
         print(str(self.module[name]))
-        with open("name.ll", "w") as f:
+        with open(f"{name}.ll", "w") as f:
             f.write(str(self.module[name]))
 
     def run_module(self, name="main"):
@@ -119,9 +122,13 @@ class Compiler:
         print("result of execution", cfunc())  # Print the result of the cfunc
 
 
-s = "main() { let a = 1 + 3 }"
-
-
 def main():
-    c = Compiler(s)
-    c.compile_module(parse(s))
+    while True:
+        try:
+            s = input("compile > ")
+        except EOFError:
+            break
+        if not s:
+            continue
+        c = Compiler(s)
+        c.compile_module(parse(s))

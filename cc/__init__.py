@@ -2,95 +2,124 @@ import llvmlite.ir as ir
 import llvmlite.binding as llvm
 from ctypes import CFUNCTYPE, c_int
 
+from distutils.command import build
 from parser import parse
 
 
-def compile_module(parsed):
-    print(parsed)
+class Compiler:
+    def __init__(self, source):
+        self.source = source
+        self.parsed = parse(source)
+        self.builder = []
+        self.triple = llvm.get_default_triple()
+        self.module = {}
+        self.func = []
+        self.block = []
+        self.var = {}  # Needs to be made function unique
 
-    builder = ir.IRBuilder()
-
-    def compile(node):
+    def compile(self, node, name=""):
         print("--->", str(node))
+
         match node.type:
+            case "PROGRAM":
+                return self.compile(node.children[0])
+            case "FUNCTIONS":
+                for child in node.children:
+                    self.compile(child)
+            case "FUNCTION":
+                fnty = ir.FunctionType(ir.IntType(32), [])
+                self.func.append(ir.Function(self.module, fnty, name=node.leaf))
+                self.compile(node.children[0])
+            case "BLOCK":
+                self.block.append(self.func[-1].append_basic_block())
+                self.builder.append(ir.IRBuilder(self.block[-1]))
+                self.compile(node.children[0])
+                self.builder[-1].ret(
+                    ir.Constant(ir.IntType(32), 33)
+                )  # I need to find a way to find the last expression for return value
+                self.builder.pop()
+                self.block.pop()
+            case "STATEMENTS":
+                for child in node.children:
+                    self.compile(child)
+            case "STATEMENT":
+                self.compile(node.children[0])
+            case "VAR_DECLARE":
+                self.var[node.leaf] = self.builder[-1].alloca(
+                    ir.IntType(32), name=node.leaf
+                )
+                self.compile(node.children[0])
+            case "VAR_ASSIGN":
+                self.builder[-1].store(
+                    self.compile(node.children[0]), self.var[node.leaf]
+                )
             case "PLUS":
-                left = compile(node.children[0])
-                right = compile(node.children[1])
-                return builder.add(left, right)
+                left = self.compile(node.children[0])
+                right = self.compile(node.children[1])
+                return self.builder[-1].add(left, right)
             case "MINUS":
-                left = compile(node.children[0])
-                right = compile(node.children[1])
-                return builder.sub(left, right)
+                left = self.compile(node.children[0])
+                right = self.compile(node.children[1])
+                return self.builder[-1].sub(left, right)
             case "MULTIPLY":
-                left = compile(node.children[0])
-                right = compile(node.children[1])
-                return builder.mul(left, right)
+                left = self.compile(node.children[0])
+                right = self.compile(node.children[1])
+                return self.builder[-1].mul(left, right)
             case "DIVIDE":
-                left = compile(node.children[0])
-                right = compile(node.children[1])
-                return builder.sdiv(left, right)
+                left = self.compile(node.children[0])
+                right = self.compile(node.children[1])
+                return self.builder[-1].sdiv(left, right)
             case "TERM":
-                return compile(node.children[0])
+                return self.compile(node.children[0])
             case "FACTOR":
-                return compile(node.children[0])
+                return self.compile(node.children[0])
             case "EXPRESSION":
-                return compile(node.children[0])
+                return self.compile(node.children[0])
             case "NUMBER":
                 return ir.Constant(ir.IntType(32), int(node.leaf))
-        return None
 
-    triple = llvm.get_default_triple()  # Get the default triple
+    def compile_module(self, parsed, name="main"):
+        print(parsed)
 
-    module = ir.Module(
-        "main"
-    )  # Name of the module (we have only one module in this moment)
-    # builder = ir.IRBuilder()  # Builder to create instructions
-    #
-    module.triple = triple
+        self.module[name] = ir.Module(name)
+        self.compile(parsed)
 
-    fnty = ir.FunctionType(
-        ir.IntType(32), []
-    )  # Function type: int32_t foo(void), first is return type, second param is the input types
-    func = ir.Function(module, fnty, name="main")  # Create a function named main
+        print(str(self.module[name]))
+        with open("name.ll", "w") as f:
+            f.write(str(self.module[name]))
 
-    block = func.append_basic_block("main_entry")  # Create a block in the function
+    def run_module(self, name="main"):
+        # Lets create an execution engine
+        llvm.initialize()  # Initialize the llvm
+        llvm.initialize_native_target()  # Initialize the native target
+        llvm.initialize_native_asmprinter()  # Initialize the native asm printer
+        # llvm.initialize_native_asmparser()  # Initialize the native asm parser if we want to support inline assembly
 
-    builder = ir.IRBuilder(block)  # Create a builder
+        llvm_parsed = llvm.parse_assembly(str(self.module[name]))  # Parse the module
+        llvm_parsed.verify()  # Verify the module
+        # print(llvm_parsed)  # Print the parsed module
 
-    # Try to compile the module
-    value = compile(parsed)
-    # breakpoint()
-    builder.ret(value)  # Return 33 as a test that the builder works
+        target_machine = llvm.Target.from_triple(
+            self.triple
+        ).create_target_machine()  # Create a target machine
+        engine = llvm.create_mcjit_compiler(
+            llvm_parsed, target_machine
+        )  # Create a MCJIT compiler
+        # engine.add_module(llvm_parsed)  # Add the module to the engine
+        engine.finalize_object()  # Finalize the object
+        engine.run_static_constructors()  # Run the static constructors
 
-    # print(str(module))
+        func_ptr = engine.get_function_address(
+            name
+        )  # Get the function address, assuming the function name is the same as module name
+        cfunc = CFUNCTYPE(c_int)(func_ptr)  # Create a cfunc
+        print("result of execution", cfunc())  # Print the result of the cfunc
 
-    with open("out.ll", "w") as f:
-        f.write(str(module))
 
-    # Lets create an execution engine
-    llvm.initialize()  # Initialize the llvm
-    llvm.initialize_native_target()  # Initialize the native target
-    llvm.initialize_native_asmprinter()  # Initialize the native asm printer
-    # llvm.initialize_native_asmparser()  # Initialize the native asm parser if we want to support inline assembly
-
-    llvm_parsed = llvm.parse_assembly(str(module))  # Parse the module
-    llvm_parsed.verify()  # Verify the module
-    print(llvm_parsed)  # Print the parsed module
-
-    target_machine = llvm.Target.from_triple(
-        triple
-    ).create_target_machine()  # Create a target machine
-    engine = llvm.create_mcjit_compiler(
-        llvm_parsed, target_machine
-    )  # Create a MCJIT compiler
-    # engine.add_module(llvm_parsed)  # Add the module to the engine
-    engine.finalize_object()  # Finalize the object
-    engine.run_static_constructors()  # Run the static constructors
-
-    func_ptr = engine.get_function_address("main")  # Get the function address
-    cfunc = CFUNCTYPE(c_int)(func_ptr)  # Create a cfunc
-    print("result of execution", cfunc())  # Print the result of the cfunc
+s = "main() { a = 1 + 3 }"
 
 
 def main():
-    compile_module(parse("2*3+34-(23*2+1)"))
+    c = Compiler(s)
+    c.compile_module
+    c.compile_module(parse(s))

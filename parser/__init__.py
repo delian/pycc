@@ -5,6 +5,7 @@ from tokenization import tokens
 import readline
 
 readline.parse_and_bind("tab: complete")
+print(tokens)
 
 
 class Node:
@@ -78,8 +79,15 @@ def p_statements(p):
 
 def p_statement(p):
     """statement : expression
-    | var_assign"""
+    | var_declare
+    | var_assign
+    """
     p[0] = Node("STATEMENT", [p[1]])
+
+
+def p_var_declare(p):
+    """var_declare : LET NAME '=' expression"""
+    p[0] = Node("VAR_DECLARE", [p[4]], p[2])
 
 
 def p_var_assign(p):
@@ -136,12 +144,6 @@ def p_error(p):
 
 lex.lex(module=tokenization)
 parser = yacc.yacc()
-
-# s = """2*3+(3-5*(4*5))"""
-# s = "2+3"
-#
-# parsed = parser.parse(s)
-#
 
 
 def parse(s):

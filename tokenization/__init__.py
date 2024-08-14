@@ -1,8 +1,12 @@
+__all__ = ["tokens"]
+
 tokens = (
     "NUMBER",
     "NAME",
+    "LET",
 )
 
+t_LET = r"let"
 t_NAME = r"[a-zA-Z_][a-zA-Z0-9_]*"
 
 literals = ["=", "+", "-", "*", "/", "(", ")", "{", "}", ";"]

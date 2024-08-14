@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = "NAME NUMBERprogram : functions\n    | glob_variables ';' functions\n    glob_variables : glob_variable\n    | glob_variables ';' glob_variableglob_variable : NAME '=' expressionfunctions : function\n    | functions ';' functionfunction : NAME '(' ')' blockblock : '{' statements '}'\n    | '{' statements ';' '}'\n    | '{' '}'\n    statements : statement\n    | statements ';' statementstatement : expression\n    | var_assignvar_assign : NAME '=' expressionexpression : expression '+' term\n               | expression '-' term\n    term : term '*' factor\n         | term '/' factor\n    expression : termterm : factorfactor : NUMBERfactor : NAMEfactor : '(' expression ')'"
+_lr_signature = "LET NAME NUMBERprogram : functions\n    | glob_variables ';' functions\n    glob_variables : glob_variable\n    | glob_variables ';' glob_variableglob_variable : NAME '=' expressionfunctions : function\n    | functions ';' functionfunction : NAME '(' ')' blockblock : '{' statements '}'\n    | '{' statements ';' '}'\n    | '{' '}'\n    statements : statement\n    | statements ';' statementstatement : expression\n    | var_declare\n    | var_assign\n    var_declare : LET NAME '=' expressionvar_assign : NAME '=' expressionexpression : expression '+' term\n               | expression '-' term\n    term : term '*' factor\n         | term '/' factor\n    expression : termterm : factorfactor : NUMBERfactor : NAMEfactor : '(' expression ')'"
     
-_lr_action_items = {'NAME':([0,7,8,10,22,24,25,26,27,28,42,43,],[6,12,15,17,17,35,17,17,17,17,35,17,]),'$end':([1,2,4,11,13,23,31,41,44,],[0,-1,-6,-7,-2,-8,-11,-9,-10,]),';':([2,3,4,5,11,13,14,17,18,19,20,21,23,30,31,32,33,34,35,36,37,38,39,40,41,44,45,46,],[7,8,-6,-3,-7,7,-4,-24,-5,-21,-22,-23,-8,42,-11,-12,-14,-15,-24,-17,-18,-19,-20,-25,-9,-10,-13,-16,]),'(':([6,10,12,15,22,24,25,26,27,28,42,43,],[9,22,9,9,22,22,22,22,22,22,22,22,]),'=':([6,15,35,],[10,10,43,]),')':([9,17,19,20,21,29,36,37,38,39,40,],[16,-24,-21,-22,-23,40,-17,-18,-19,-20,-25,]),'NUMBER':([10,22,24,25,26,27,28,42,43,],[21,21,21,21,21,21,21,21,21,]),'{':([16,],[24,]),'*':([17,19,20,21,35,36,37,38,39,40,],[-24,27,-22,-23,-24,27,27,-19,-20,-25,]),'/':([17,19,20,21,35,36,37,38,39,40,],[-24,28,-22,-23,-24,28,28,-19,-20,-25,]),'+':([17,18,19,20,21,29,33,35,36,37,38,39,40,46,],[-24,25,-21,-22,-23,25,25,-24,-17,-18,-19,-20,-25,25,]),'-':([17,18,19,20,21,29,33,35,36,37,38,39,40,46,],[-24,26,-21,-22,-23,26,26,-24,-17,-18,-19,-20,-25,26,]),'}':([17,19,20,21,24,30,32,33,34,35,36,37,38,39,40,42,45,46,],[-24,-21,-22,-23,31,41,-12,-14,-15,-24,-17,-18,-19,-20,-25,44,-13,-16,]),}
+_lr_action_items = {'NAME':([0,7,8,10,22,24,25,26,27,28,36,44,46,49,],[6,12,15,17,17,37,17,17,17,17,45,37,17,17,]),'$end':([1,2,4,11,13,23,31,43,47,],[0,-1,-6,-7,-2,-8,-11,-9,-10,]),';':([2,3,4,5,11,13,14,17,18,19,20,21,23,30,31,32,33,34,35,37,38,39,40,41,42,43,47,48,50,51,],[7,8,-6,-3,-7,7,-4,-26,-5,-23,-24,-25,-8,44,-11,-12,-14,-15,-16,-26,-19,-20,-21,-22,-27,-9,-10,-13,-18,-17,]),'(':([6,10,12,15,22,24,25,26,27,28,44,46,49,],[9,22,9,9,22,22,22,22,22,22,22,22,22,]),'=':([6,15,37,45,],[10,10,46,49,]),')':([9,17,19,20,21,29,38,39,40,41,42,],[16,-26,-23,-24,-25,42,-19,-20,-21,-22,-27,]),'NUMBER':([10,22,24,25,26,27,28,44,46,49,],[21,21,21,21,21,21,21,21,21,21,]),'{':([16,],[24,]),'*':([17,19,20,21,37,38,39,40,41,42,],[-26,27,-24,-25,-26,27,27,-21,-22,-27,]),'/':([17,19,20,21,37,38,39,40,41,42,],[-26,28,-24,-25,-26,28,28,-21,-22,-27,]),'+':([17,18,19,20,21,29,33,37,38,39,40,41,42,50,51,],[-26,25,-23,-24,-25,25,25,-26,-19,-20,-21,-22,-27,25,25,]),'-':([17,18,19,20,21,29,33,37,38,39,40,41,42,50,51,],[-26,26,-23,-24,-25,26,26,-26,-19,-20,-21,-22,-27,26,26,]),'}':([17,19,20,21,24,30,32,33,34,35,37,38,39,40,41,42,44,48,50,51,],[-26,-23,-24,-25,31,43,-12,-14,-15,-16,-26,-19,-20,-21,-22,-27,47,-13,-18,-17,]),'LET':([24,44,],[36,36,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'program':([0,],[1,]),'functions':([0,8,],[2,13,]),'glob_variables':([0,],[3,]),'function':([0,7,8,],[4,11,4,]),'glob_variable':([0,8,],[5,14,]),'expression':([10,22,24,42,43,],[18,29,33,33,46,]),'term':([10,22,24,25,26,42,43,],[19,19,19,36,37,19,19,]),'factor':([10,22,24,25,26,27,28,42,43,],[20,20,20,20,20,38,39,20,20,]),'block':([16,],[23,]),'statements':([24,],[30,]),'statement':([24,42,],[32,45,]),'var_assign':([24,42,],[34,34,]),}
+_lr_goto_items = {'program':([0,],[1,]),'functions':([0,8,],[2,13,]),'glob_variables':([0,],[3,]),'function':([0,7,8,],[4,11,4,]),'glob_variable':([0,8,],[5,14,]),'expression':([10,22,24,44,46,49,],[18,29,33,33,50,51,]),'term':([10,22,24,25,26,44,46,49,],[19,19,19,38,39,19,19,19,]),'factor':([10,22,24,25,26,27,28,44,46,49,],[20,20,20,20,20,40,41,20,20,20,]),'block':([16,],[23,]),'statements':([24,],[30,]),'statement':([24,44,],[32,48,]),'var_declare':([24,44,],[34,34,]),'var_assign':([24,44,],[35,35,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,29 +27,31 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> program","S'",1,None,None,None),
-  ('program -> functions','program',1,'p_program','__init__.py',25),
-  ('program -> glob_variables ; functions','program',3,'p_program','__init__.py',26),
-  ('glob_variables -> glob_variable','glob_variables',1,'p_glob_variables','__init__.py',32),
-  ('glob_variables -> glob_variables ; glob_variable','glob_variables',3,'p_glob_variables','__init__.py',33),
-  ('glob_variable -> NAME = expression','glob_variable',3,'p_glob_variable','__init__.py',41),
-  ('functions -> function','functions',1,'p_functions','__init__.py',46),
-  ('functions -> functions ; function','functions',3,'p_functions','__init__.py',47),
-  ('function -> NAME ( ) block','function',4,'p_function','__init__.py',55),
-  ('block -> { statements }','block',3,'p_block','__init__.py',60),
-  ('block -> { statements ; }','block',4,'p_block','__init__.py',61),
-  ('block -> { }','block',2,'p_block','__init__.py',62),
-  ('statements -> statement','statements',1,'p_statements','__init__.py',71),
-  ('statements -> statements ; statement','statements',3,'p_statements','__init__.py',72),
-  ('statement -> expression','statement',1,'p_statement','__init__.py',80),
-  ('statement -> var_assign','statement',1,'p_statement','__init__.py',81),
-  ('var_assign -> NAME = expression','var_assign',3,'p_var_assign','__init__.py',86),
-  ('expression -> expression + term','expression',3,'p_expression','__init__.py',91),
-  ('expression -> expression - term','expression',3,'p_expression','__init__.py',92),
-  ('term -> term * factor','term',3,'p_expression','__init__.py',93),
-  ('term -> term / factor','term',3,'p_expression','__init__.py',94),
-  ('expression -> term','expression',1,'p_expression_term','__init__.py',108),
-  ('term -> factor','term',1,'p_term_factor','__init__.py',113),
-  ('factor -> NUMBER','factor',1,'p_factor_num','__init__.py',118),
-  ('factor -> NAME','factor',1,'p_factor_variable','__init__.py',123),
-  ('factor -> ( expression )','factor',3,'p_factor_expr','__init__.py',128),
+  ('program -> functions','program',1,'p_program','__init__.py',26),
+  ('program -> glob_variables ; functions','program',3,'p_program','__init__.py',27),
+  ('glob_variables -> glob_variable','glob_variables',1,'p_glob_variables','__init__.py',33),
+  ('glob_variables -> glob_variables ; glob_variable','glob_variables',3,'p_glob_variables','__init__.py',34),
+  ('glob_variable -> NAME = expression','glob_variable',3,'p_glob_variable','__init__.py',42),
+  ('functions -> function','functions',1,'p_functions','__init__.py',47),
+  ('functions -> functions ; function','functions',3,'p_functions','__init__.py',48),
+  ('function -> NAME ( ) block','function',4,'p_function','__init__.py',56),
+  ('block -> { statements }','block',3,'p_block','__init__.py',61),
+  ('block -> { statements ; }','block',4,'p_block','__init__.py',62),
+  ('block -> { }','block',2,'p_block','__init__.py',63),
+  ('statements -> statement','statements',1,'p_statements','__init__.py',72),
+  ('statements -> statements ; statement','statements',3,'p_statements','__init__.py',73),
+  ('statement -> expression','statement',1,'p_statement','__init__.py',81),
+  ('statement -> var_declare','statement',1,'p_statement','__init__.py',82),
+  ('statement -> var_assign','statement',1,'p_statement','__init__.py',83),
+  ('var_declare -> LET NAME = expression','var_declare',4,'p_var_declare','__init__.py',89),
+  ('var_assign -> NAME = expression','var_assign',3,'p_var_assign','__init__.py',94),
+  ('expression -> expression + term','expression',3,'p_expression','__init__.py',99),
+  ('expression -> expression - term','expression',3,'p_expression','__init__.py',100),
+  ('term -> term * factor','term',3,'p_expression','__init__.py',101),
+  ('term -> term / factor','term',3,'p_expression','__init__.py',102),
+  ('expression -> term','expression',1,'p_expression_term','__init__.py',116),
+  ('term -> factor','term',1,'p_term_factor','__init__.py',121),
+  ('factor -> NUMBER','factor',1,'p_factor_num','__init__.py',126),
+  ('factor -> NAME','factor',1,'p_factor_variable','__init__.py',131),
+  ('factor -> ( expression )','factor',3,'p_factor_expr','__init__.py',136),
 ]

@@ -17,30 +17,33 @@ Rule 11    block -> { }
 Rule 12    statements -> statement
 Rule 13    statements -> statements ; statement
 Rule 14    statement -> expression
-Rule 15    statement -> var_assign
-Rule 16    var_assign -> NAME = expression
-Rule 17    expression -> expression + term
-Rule 18    expression -> expression - term
-Rule 19    term -> term * factor
-Rule 20    term -> term / factor
-Rule 21    expression -> term
-Rule 22    term -> factor
-Rule 23    factor -> NUMBER
-Rule 24    factor -> NAME
-Rule 25    factor -> ( expression )
+Rule 15    statement -> var_declare
+Rule 16    statement -> var_assign
+Rule 17    var_declare -> LET NAME = expression
+Rule 18    var_assign -> NAME = expression
+Rule 19    expression -> expression + term
+Rule 20    expression -> expression - term
+Rule 21    term -> term * factor
+Rule 22    term -> term / factor
+Rule 23    expression -> term
+Rule 24    term -> factor
+Rule 25    factor -> NUMBER
+Rule 26    factor -> NAME
+Rule 27    factor -> ( expression )
 
 Terminals, with rules where they appear
 
-(                    : 8 25
-)                    : 8 25
-*                    : 19
-+                    : 17
--                    : 18
-/                    : 20
+(                    : 8 27
+)                    : 8 27
+*                    : 21
++                    : 19
+-                    : 20
+/                    : 22
 ;                    : 2 4 7 10 13
-=                    : 5 16
-NAME                 : 5 8 16 24
-NUMBER               : 23
+=                    : 5 17 18
+LET                  : 17
+NAME                 : 5 8 17 18 26
+NUMBER               : 25
 error                : 
 {                    : 9 10 11
 }                    : 9 10 11
@@ -48,8 +51,8 @@ error                :
 Nonterminals, with rules where they appear
 
 block                : 8
-expression           : 5 14 16 17 18 25
-factor               : 19 20 22
+expression           : 5 14 17 18 19 20 27
+factor               : 21 22 24
 function             : 6 7
 functions            : 1 2 7
 glob_variable        : 3 4
@@ -57,8 +60,9 @@ glob_variables       : 2 4
 program              : 0
 statement            : 12 13
 statements           : 9 10 13
-term                 : 17 18 19 20 21
-var_assign           : 15
+term                 : 19 20 21 22 23
+var_assign           : 16
+var_declare          : 15
 
 Parsing method: LALR
 
@@ -163,15 +167,15 @@ state 9
 state 10
 
     (5) glob_variable -> NAME = . expression
-    (17) expression -> . expression + term
-    (18) expression -> . expression - term
-    (21) expression -> . term
-    (19) term -> . term * factor
-    (20) term -> . term / factor
-    (22) term -> . factor
-    (23) factor -> . NUMBER
-    (24) factor -> . NAME
-    (25) factor -> . ( expression )
+    (19) expression -> . expression + term
+    (20) expression -> . expression - term
+    (23) expression -> . term
+    (21) term -> . term * factor
+    (22) term -> . term / factor
+    (24) term -> . factor
+    (25) factor -> . NUMBER
+    (26) factor -> . NAME
+    (27) factor -> . ( expression )
 
     NUMBER          shift and go to state 21
     NAME            shift and go to state 17
@@ -234,22 +238,22 @@ state 16
 
 state 17
 
-    (24) factor -> NAME .
+    (26) factor -> NAME .
 
-    *               reduce using rule 24 (factor -> NAME .)
-    /               reduce using rule 24 (factor -> NAME .)
-    +               reduce using rule 24 (factor -> NAME .)
-    -               reduce using rule 24 (factor -> NAME .)
-    ;               reduce using rule 24 (factor -> NAME .)
-    )               reduce using rule 24 (factor -> NAME .)
-    }               reduce using rule 24 (factor -> NAME .)
+    *               reduce using rule 26 (factor -> NAME .)
+    /               reduce using rule 26 (factor -> NAME .)
+    +               reduce using rule 26 (factor -> NAME .)
+    -               reduce using rule 26 (factor -> NAME .)
+    ;               reduce using rule 26 (factor -> NAME .)
+    )               reduce using rule 26 (factor -> NAME .)
+    }               reduce using rule 26 (factor -> NAME .)
 
 
 state 18
 
     (5) glob_variable -> NAME = expression .
-    (17) expression -> expression . + term
-    (18) expression -> expression . - term
+    (19) expression -> expression . + term
+    (20) expression -> expression . - term
 
     ;               reduce using rule 5 (glob_variable -> NAME = expression .)
     +               shift and go to state 25
@@ -258,57 +262,57 @@ state 18
 
 state 19
 
-    (21) expression -> term .
-    (19) term -> term . * factor
-    (20) term -> term . / factor
+    (23) expression -> term .
+    (21) term -> term . * factor
+    (22) term -> term . / factor
 
-    +               reduce using rule 21 (expression -> term .)
-    -               reduce using rule 21 (expression -> term .)
-    ;               reduce using rule 21 (expression -> term .)
-    )               reduce using rule 21 (expression -> term .)
-    }               reduce using rule 21 (expression -> term .)
+    +               reduce using rule 23 (expression -> term .)
+    -               reduce using rule 23 (expression -> term .)
+    ;               reduce using rule 23 (expression -> term .)
+    )               reduce using rule 23 (expression -> term .)
+    }               reduce using rule 23 (expression -> term .)
     *               shift and go to state 27
     /               shift and go to state 28
 
 
 state 20
 
-    (22) term -> factor .
+    (24) term -> factor .
 
-    *               reduce using rule 22 (term -> factor .)
-    /               reduce using rule 22 (term -> factor .)
-    +               reduce using rule 22 (term -> factor .)
-    -               reduce using rule 22 (term -> factor .)
-    ;               reduce using rule 22 (term -> factor .)
-    )               reduce using rule 22 (term -> factor .)
-    }               reduce using rule 22 (term -> factor .)
+    *               reduce using rule 24 (term -> factor .)
+    /               reduce using rule 24 (term -> factor .)
+    +               reduce using rule 24 (term -> factor .)
+    -               reduce using rule 24 (term -> factor .)
+    ;               reduce using rule 24 (term -> factor .)
+    )               reduce using rule 24 (term -> factor .)
+    }               reduce using rule 24 (term -> factor .)
 
 
 state 21
 
-    (23) factor -> NUMBER .
+    (25) factor -> NUMBER .
 
-    *               reduce using rule 23 (factor -> NUMBER .)
-    /               reduce using rule 23 (factor -> NUMBER .)
-    +               reduce using rule 23 (factor -> NUMBER .)
-    -               reduce using rule 23 (factor -> NUMBER .)
-    ;               reduce using rule 23 (factor -> NUMBER .)
-    )               reduce using rule 23 (factor -> NUMBER .)
-    }               reduce using rule 23 (factor -> NUMBER .)
+    *               reduce using rule 25 (factor -> NUMBER .)
+    /               reduce using rule 25 (factor -> NUMBER .)
+    +               reduce using rule 25 (factor -> NUMBER .)
+    -               reduce using rule 25 (factor -> NUMBER .)
+    ;               reduce using rule 25 (factor -> NUMBER .)
+    )               reduce using rule 25 (factor -> NUMBER .)
+    }               reduce using rule 25 (factor -> NUMBER .)
 
 
 state 22
 
-    (25) factor -> ( . expression )
-    (17) expression -> . expression + term
-    (18) expression -> . expression - term
-    (21) expression -> . term
-    (19) term -> . term * factor
-    (20) term -> . term / factor
-    (22) term -> . factor
-    (23) factor -> . NUMBER
-    (24) factor -> . NAME
-    (25) factor -> . ( expression )
+    (27) factor -> ( . expression )
+    (19) expression -> . expression + term
+    (20) expression -> . expression - term
+    (23) expression -> . term
+    (21) term -> . term * factor
+    (22) term -> . term / factor
+    (24) term -> . factor
+    (25) factor -> . NUMBER
+    (26) factor -> . NAME
+    (27) factor -> . ( expression )
 
     NUMBER          shift and go to state 21
     NAME            shift and go to state 17
@@ -334,97 +338,101 @@ state 24
     (12) statements -> . statement
     (13) statements -> . statements ; statement
     (14) statement -> . expression
-    (15) statement -> . var_assign
-    (17) expression -> . expression + term
-    (18) expression -> . expression - term
-    (21) expression -> . term
-    (16) var_assign -> . NAME = expression
-    (19) term -> . term * factor
-    (20) term -> . term / factor
-    (22) term -> . factor
-    (23) factor -> . NUMBER
-    (24) factor -> . NAME
-    (25) factor -> . ( expression )
+    (15) statement -> . var_declare
+    (16) statement -> . var_assign
+    (19) expression -> . expression + term
+    (20) expression -> . expression - term
+    (23) expression -> . term
+    (17) var_declare -> . LET NAME = expression
+    (18) var_assign -> . NAME = expression
+    (21) term -> . term * factor
+    (22) term -> . term / factor
+    (24) term -> . factor
+    (25) factor -> . NUMBER
+    (26) factor -> . NAME
+    (27) factor -> . ( expression )
 
     }               shift and go to state 31
-    NAME            shift and go to state 35
+    LET             shift and go to state 36
+    NAME            shift and go to state 37
     NUMBER          shift and go to state 21
     (               shift and go to state 22
 
     statements                     shift and go to state 30
     statement                      shift and go to state 32
     expression                     shift and go to state 33
-    var_assign                     shift and go to state 34
+    var_declare                    shift and go to state 34
+    var_assign                     shift and go to state 35
     term                           shift and go to state 19
     factor                         shift and go to state 20
 
 state 25
 
-    (17) expression -> expression + . term
-    (19) term -> . term * factor
-    (20) term -> . term / factor
-    (22) term -> . factor
-    (23) factor -> . NUMBER
-    (24) factor -> . NAME
-    (25) factor -> . ( expression )
+    (19) expression -> expression + . term
+    (21) term -> . term * factor
+    (22) term -> . term / factor
+    (24) term -> . factor
+    (25) factor -> . NUMBER
+    (26) factor -> . NAME
+    (27) factor -> . ( expression )
 
     NUMBER          shift and go to state 21
     NAME            shift and go to state 17
     (               shift and go to state 22
 
-    term                           shift and go to state 36
+    term                           shift and go to state 38
     factor                         shift and go to state 20
 
 state 26
 
-    (18) expression -> expression - . term
-    (19) term -> . term * factor
-    (20) term -> . term / factor
-    (22) term -> . factor
-    (23) factor -> . NUMBER
-    (24) factor -> . NAME
-    (25) factor -> . ( expression )
+    (20) expression -> expression - . term
+    (21) term -> . term * factor
+    (22) term -> . term / factor
+    (24) term -> . factor
+    (25) factor -> . NUMBER
+    (26) factor -> . NAME
+    (27) factor -> . ( expression )
 
     NUMBER          shift and go to state 21
     NAME            shift and go to state 17
     (               shift and go to state 22
 
-    term                           shift and go to state 37
+    term                           shift and go to state 39
     factor                         shift and go to state 20
 
 state 27
 
-    (19) term -> term * . factor
-    (23) factor -> . NUMBER
-    (24) factor -> . NAME
-    (25) factor -> . ( expression )
+    (21) term -> term * . factor
+    (25) factor -> . NUMBER
+    (26) factor -> . NAME
+    (27) factor -> . ( expression )
 
     NUMBER          shift and go to state 21
     NAME            shift and go to state 17
     (               shift and go to state 22
 
-    factor                         shift and go to state 38
+    factor                         shift and go to state 40
 
 state 28
 
-    (20) term -> term / . factor
-    (23) factor -> . NUMBER
-    (24) factor -> . NAME
-    (25) factor -> . ( expression )
+    (22) term -> term / . factor
+    (25) factor -> . NUMBER
+    (26) factor -> . NAME
+    (27) factor -> . ( expression )
 
     NUMBER          shift and go to state 21
     NAME            shift and go to state 17
     (               shift and go to state 22
 
-    factor                         shift and go to state 39
+    factor                         shift and go to state 41
 
 state 29
 
-    (25) factor -> ( expression . )
-    (17) expression -> expression . + term
-    (18) expression -> expression . - term
+    (27) factor -> ( expression . )
+    (19) expression -> expression . + term
+    (20) expression -> expression . - term
 
-    )               shift and go to state 40
+    )               shift and go to state 42
     +               shift and go to state 25
     -               shift and go to state 26
 
@@ -435,8 +443,8 @@ state 30
     (10) block -> { statements . ; }
     (13) statements -> statements . ; statement
 
-    }               shift and go to state 41
-    ;               shift and go to state 42
+    }               shift and go to state 43
+    ;               shift and go to state 44
 
 
 state 31
@@ -458,8 +466,8 @@ state 32
 state 33
 
     (14) statement -> expression .
-    (17) expression -> expression . + term
-    (18) expression -> expression . - term
+    (19) expression -> expression . + term
+    (20) expression -> expression . - term
 
     }               reduce using rule 14 (statement -> expression .)
     ;               reduce using rule 14 (statement -> expression .)
@@ -469,96 +477,111 @@ state 33
 
 state 34
 
-    (15) statement -> var_assign .
+    (15) statement -> var_declare .
 
-    }               reduce using rule 15 (statement -> var_assign .)
-    ;               reduce using rule 15 (statement -> var_assign .)
+    }               reduce using rule 15 (statement -> var_declare .)
+    ;               reduce using rule 15 (statement -> var_declare .)
 
 
 state 35
 
-    (16) var_assign -> NAME . = expression
-    (24) factor -> NAME .
+    (16) statement -> var_assign .
 
-    =               shift and go to state 43
-    *               reduce using rule 24 (factor -> NAME .)
-    /               reduce using rule 24 (factor -> NAME .)
-    +               reduce using rule 24 (factor -> NAME .)
-    -               reduce using rule 24 (factor -> NAME .)
-    }               reduce using rule 24 (factor -> NAME .)
-    ;               reduce using rule 24 (factor -> NAME .)
+    }               reduce using rule 16 (statement -> var_assign .)
+    ;               reduce using rule 16 (statement -> var_assign .)
 
 
 state 36
 
-    (17) expression -> expression + term .
-    (19) term -> term . * factor
-    (20) term -> term . / factor
+    (17) var_declare -> LET . NAME = expression
 
-    +               reduce using rule 17 (expression -> expression + term .)
-    -               reduce using rule 17 (expression -> expression + term .)
-    ;               reduce using rule 17 (expression -> expression + term .)
-    )               reduce using rule 17 (expression -> expression + term .)
-    }               reduce using rule 17 (expression -> expression + term .)
-    *               shift and go to state 27
-    /               shift and go to state 28
+    NAME            shift and go to state 45
 
 
 state 37
 
-    (18) expression -> expression - term .
-    (19) term -> term . * factor
-    (20) term -> term . / factor
+    (18) var_assign -> NAME . = expression
+    (26) factor -> NAME .
 
-    +               reduce using rule 18 (expression -> expression - term .)
-    -               reduce using rule 18 (expression -> expression - term .)
-    ;               reduce using rule 18 (expression -> expression - term .)
-    )               reduce using rule 18 (expression -> expression - term .)
-    }               reduce using rule 18 (expression -> expression - term .)
-    *               shift and go to state 27
-    /               shift and go to state 28
+    =               shift and go to state 46
+    *               reduce using rule 26 (factor -> NAME .)
+    /               reduce using rule 26 (factor -> NAME .)
+    +               reduce using rule 26 (factor -> NAME .)
+    -               reduce using rule 26 (factor -> NAME .)
+    }               reduce using rule 26 (factor -> NAME .)
+    ;               reduce using rule 26 (factor -> NAME .)
 
 
 state 38
 
-    (19) term -> term * factor .
+    (19) expression -> expression + term .
+    (21) term -> term . * factor
+    (22) term -> term . / factor
 
-    *               reduce using rule 19 (term -> term * factor .)
-    /               reduce using rule 19 (term -> term * factor .)
-    +               reduce using rule 19 (term -> term * factor .)
-    -               reduce using rule 19 (term -> term * factor .)
-    ;               reduce using rule 19 (term -> term * factor .)
-    )               reduce using rule 19 (term -> term * factor .)
-    }               reduce using rule 19 (term -> term * factor .)
+    +               reduce using rule 19 (expression -> expression + term .)
+    -               reduce using rule 19 (expression -> expression + term .)
+    ;               reduce using rule 19 (expression -> expression + term .)
+    )               reduce using rule 19 (expression -> expression + term .)
+    }               reduce using rule 19 (expression -> expression + term .)
+    *               shift and go to state 27
+    /               shift and go to state 28
 
 
 state 39
 
-    (20) term -> term / factor .
+    (20) expression -> expression - term .
+    (21) term -> term . * factor
+    (22) term -> term . / factor
 
-    *               reduce using rule 20 (term -> term / factor .)
-    /               reduce using rule 20 (term -> term / factor .)
-    +               reduce using rule 20 (term -> term / factor .)
-    -               reduce using rule 20 (term -> term / factor .)
-    ;               reduce using rule 20 (term -> term / factor .)
-    )               reduce using rule 20 (term -> term / factor .)
-    }               reduce using rule 20 (term -> term / factor .)
+    +               reduce using rule 20 (expression -> expression - term .)
+    -               reduce using rule 20 (expression -> expression - term .)
+    ;               reduce using rule 20 (expression -> expression - term .)
+    )               reduce using rule 20 (expression -> expression - term .)
+    }               reduce using rule 20 (expression -> expression - term .)
+    *               shift and go to state 27
+    /               shift and go to state 28
 
 
 state 40
 
-    (25) factor -> ( expression ) .
+    (21) term -> term * factor .
 
-    *               reduce using rule 25 (factor -> ( expression ) .)
-    /               reduce using rule 25 (factor -> ( expression ) .)
-    +               reduce using rule 25 (factor -> ( expression ) .)
-    -               reduce using rule 25 (factor -> ( expression ) .)
-    ;               reduce using rule 25 (factor -> ( expression ) .)
-    )               reduce using rule 25 (factor -> ( expression ) .)
-    }               reduce using rule 25 (factor -> ( expression ) .)
+    *               reduce using rule 21 (term -> term * factor .)
+    /               reduce using rule 21 (term -> term * factor .)
+    +               reduce using rule 21 (term -> term * factor .)
+    -               reduce using rule 21 (term -> term * factor .)
+    ;               reduce using rule 21 (term -> term * factor .)
+    )               reduce using rule 21 (term -> term * factor .)
+    }               reduce using rule 21 (term -> term * factor .)
 
 
 state 41
+
+    (22) term -> term / factor .
+
+    *               reduce using rule 22 (term -> term / factor .)
+    /               reduce using rule 22 (term -> term / factor .)
+    +               reduce using rule 22 (term -> term / factor .)
+    -               reduce using rule 22 (term -> term / factor .)
+    ;               reduce using rule 22 (term -> term / factor .)
+    )               reduce using rule 22 (term -> term / factor .)
+    }               reduce using rule 22 (term -> term / factor .)
+
+
+state 42
+
+    (27) factor -> ( expression ) .
+
+    *               reduce using rule 27 (factor -> ( expression ) .)
+    /               reduce using rule 27 (factor -> ( expression ) .)
+    +               reduce using rule 27 (factor -> ( expression ) .)
+    -               reduce using rule 27 (factor -> ( expression ) .)
+    ;               reduce using rule 27 (factor -> ( expression ) .)
+    )               reduce using rule 27 (factor -> ( expression ) .)
+    }               reduce using rule 27 (factor -> ( expression ) .)
+
+
+state 43
 
     (9) block -> { statements } .
 
@@ -566,56 +589,67 @@ state 41
     $end            reduce using rule 9 (block -> { statements } .)
 
 
-state 42
+state 44
 
     (10) block -> { statements ; . }
     (13) statements -> statements ; . statement
     (14) statement -> . expression
-    (15) statement -> . var_assign
-    (17) expression -> . expression + term
-    (18) expression -> . expression - term
-    (21) expression -> . term
-    (16) var_assign -> . NAME = expression
-    (19) term -> . term * factor
-    (20) term -> . term / factor
-    (22) term -> . factor
-    (23) factor -> . NUMBER
-    (24) factor -> . NAME
-    (25) factor -> . ( expression )
+    (15) statement -> . var_declare
+    (16) statement -> . var_assign
+    (19) expression -> . expression + term
+    (20) expression -> . expression - term
+    (23) expression -> . term
+    (17) var_declare -> . LET NAME = expression
+    (18) var_assign -> . NAME = expression
+    (21) term -> . term * factor
+    (22) term -> . term / factor
+    (24) term -> . factor
+    (25) factor -> . NUMBER
+    (26) factor -> . NAME
+    (27) factor -> . ( expression )
 
-    }               shift and go to state 44
-    NAME            shift and go to state 35
+    }               shift and go to state 47
+    LET             shift and go to state 36
+    NAME            shift and go to state 37
     NUMBER          shift and go to state 21
     (               shift and go to state 22
 
-    statement                      shift and go to state 45
+    statement                      shift and go to state 48
     expression                     shift and go to state 33
-    var_assign                     shift and go to state 34
+    var_declare                    shift and go to state 34
+    var_assign                     shift and go to state 35
     term                           shift and go to state 19
     factor                         shift and go to state 20
 
-state 43
+state 45
 
-    (16) var_assign -> NAME = . expression
-    (17) expression -> . expression + term
-    (18) expression -> . expression - term
-    (21) expression -> . term
-    (19) term -> . term * factor
-    (20) term -> . term / factor
-    (22) term -> . factor
-    (23) factor -> . NUMBER
-    (24) factor -> . NAME
-    (25) factor -> . ( expression )
+    (17) var_declare -> LET NAME . = expression
+
+    =               shift and go to state 49
+
+
+state 46
+
+    (18) var_assign -> NAME = . expression
+    (19) expression -> . expression + term
+    (20) expression -> . expression - term
+    (23) expression -> . term
+    (21) term -> . term * factor
+    (22) term -> . term / factor
+    (24) term -> . factor
+    (25) factor -> . NUMBER
+    (26) factor -> . NAME
+    (27) factor -> . ( expression )
 
     NUMBER          shift and go to state 21
     NAME            shift and go to state 17
     (               shift and go to state 22
 
-    expression                     shift and go to state 46
+    expression                     shift and go to state 50
     term                           shift and go to state 19
     factor                         shift and go to state 20
 
-state 44
+state 47
 
     (10) block -> { statements ; } .
 
@@ -623,7 +657,7 @@ state 44
     $end            reduce using rule 10 (block -> { statements ; } .)
 
 
-state 45
+state 48
 
     (13) statements -> statements ; statement .
 
@@ -631,14 +665,47 @@ state 45
     ;               reduce using rule 13 (statements -> statements ; statement .)
 
 
-state 46
+state 49
 
-    (16) var_assign -> NAME = expression .
-    (17) expression -> expression . + term
-    (18) expression -> expression . - term
+    (17) var_declare -> LET NAME = . expression
+    (19) expression -> . expression + term
+    (20) expression -> . expression - term
+    (23) expression -> . term
+    (21) term -> . term * factor
+    (22) term -> . term / factor
+    (24) term -> . factor
+    (25) factor -> . NUMBER
+    (26) factor -> . NAME
+    (27) factor -> . ( expression )
 
-    }               reduce using rule 16 (var_assign -> NAME = expression .)
-    ;               reduce using rule 16 (var_assign -> NAME = expression .)
+    NUMBER          shift and go to state 21
+    NAME            shift and go to state 17
+    (               shift and go to state 22
+
+    expression                     shift and go to state 51
+    term                           shift and go to state 19
+    factor                         shift and go to state 20
+
+state 50
+
+    (18) var_assign -> NAME = expression .
+    (19) expression -> expression . + term
+    (20) expression -> expression . - term
+
+    }               reduce using rule 18 (var_assign -> NAME = expression .)
+    ;               reduce using rule 18 (var_assign -> NAME = expression .)
+    +               shift and go to state 25
+    -               shift and go to state 26
+
+
+state 51
+
+    (17) var_declare -> LET NAME = expression .
+    (19) expression -> expression . + term
+    (20) expression -> expression . - term
+
+    }               reduce using rule 17 (var_declare -> LET NAME = expression .)
+    ;               reduce using rule 17 (var_declare -> LET NAME = expression .)
     +               shift and go to state 25
     -               shift and go to state 26
 

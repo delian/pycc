@@ -2,7 +2,7 @@ import llvmlite.ir as ir
 import llvmlite.binding as llvm
 from ctypes import CFUNCTYPE, c_int
 from parser import parse
-import readline
+import history
 
 
 class Compiler:

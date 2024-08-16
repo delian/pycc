@@ -2,10 +2,7 @@ from ply import lex
 import tokenization
 import ply.yacc as yacc
 from tokenization import tokens
-import readline
-
-readline.parse_and_bind("tab: complete")
-print(tokens)
+import history
 
 
 class Node:

@@ -47,7 +47,10 @@ class Compiler:
             case "BLOCK":
                 # self.block.append(self.func[-1].append_basic_block())
                 # self.builder.append(ir.IRBuilder(self.block[-1]))
-                b1 = self.compile(node.children[0], module=module)
+                if len(node.children) > 0:
+                    b1 = self.compile(node.children[0], module=module)
+                else:
+                    b1 = ir.Constant(ir.IntType(32), 0)
                 # self.builder.pop()
                 # self.block.pop()
                 return b1
@@ -105,6 +108,9 @@ class Compiler:
     def compile_module(self, source, name="main"):
         parsed = parse(source)
         print(parsed)
+
+        if parsed is None:
+            return
 
         open(f"{name}.pcc", "w").write(source)
 

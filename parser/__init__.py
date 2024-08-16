@@ -77,7 +77,6 @@ def p_statements(p):
 def p_statement(p):
     """statement : var_declare
     | var_assign
-    | function_call
     | expression
     | block
     """
@@ -107,12 +106,8 @@ def p_function_call(p):
 def p_expression(p):
     """expression : expression '+' term
             | expression '-' term
-            | expression '+' function_call
-            | expression '-' function_call
     term : term '*' factor
          | term '/' factor
-         | term '*' function_call
-         | term '/' function_call
     """
     match p[2]:
         case "+":
@@ -136,8 +131,13 @@ def p_term_factor(p):
 
 
 def p_factor_num(p):
-    """factor : NUMBER"""
-    p[0] = Node("NUMBER", leaf=p[1])
+    """factor : NUMBER
+    | '-' NUMBER
+    """
+    if len(p) > 2:
+        p[0] = Node("NUMBER", leaf=-int(p[2]))
+    else:
+        p[0] = Node("NUMBER", leaf=p[1])
 
 
 def p_factor_variable(p):
@@ -148,6 +148,11 @@ def p_factor_variable(p):
 def p_factor_expr(p):
     """factor : '(' expression ')'"""
     p[0] = Node("EXPRESSION", [p[2]])
+
+
+def p_factor_function_call(p):
+    """factor : function_call"""
+    p[0] = Node("FUNCTION_CALL", [p[1]])
 
 
 # Error rule for syntax errors

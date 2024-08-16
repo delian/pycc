@@ -9,3 +9,7 @@ parser/parsetab.py
 *.pyd
 *.pyz
 *.pyw
+*.ll
+*.o
+*.s
+*.pcc

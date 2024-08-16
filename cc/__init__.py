@@ -33,7 +33,7 @@ class Compiler:
                 self.func.append(ir.Function(module, fnty, name=node.leaf))
                 self.f[node.leaf] = self.func[-1]
                 self.block.append(
-                    self.func[-1].append_basic_block(f"{node.leaf}_entry")
+                    self.func[-1].append_basic_block(module.get_unique_name(name))
                 )
                 self.builder.append(ir.IRBuilder(self.block[-1]))
                 f2 = self.compile(node.children[0], name=name, module=module)
@@ -45,11 +45,11 @@ class Compiler:
                 self.block.pop()
                 return self.func[-1]
             case "BLOCK":
-                self.block.append(self.func[-1].append_basic_block())
-                self.builder.append(ir.IRBuilder(self.block[-1]))
+                # self.block.append(self.func[-1].append_basic_block())
+                # self.builder.append(ir.IRBuilder(self.block[-1]))
                 b1 = self.compile(node.children[0], module=module)
-                self.builder.pop()
-                self.block.pop()
+                # self.builder.pop()
+                # self.block.pop()
                 return b1
             case "STATEMENTS":
                 s1 = None
@@ -102,10 +102,32 @@ class Compiler:
             case "VAERIABLE":
                 return self.var[node.leaf]
 
-    def compile_module(self, parsed, name="main"):
+    def compile_module(self, source, name="main"):
+        parsed = parse(source)
         print(parsed)
 
+        open(f"{name}.pcc", "w").write(source)
+
         self.module[name] = ir.Module(name)
+        self.module[name].triple = self.triple
+        di_file = self.module[name].add_debug_info(
+            "DIFile",
+            {
+                "filename": f"{name}.pcc",
+                "directory": ".",
+            },
+        )
+        # di_compile_unit = self.module[name].add_debug_info(
+        #     "DICompileUnit",
+        #     {
+        #         "language": ir.DIToken("DW_LANG_Pycc"),
+        #         "file": di_file,
+        #         "producer": "pycc 0.0",
+        #         "runtimeVersion": 2,
+        #         "isOptimized": False,
+        #     },
+        #     is_distinct=True,
+        # )
         self.compile(parsed, module=self.module[name])
 
         print(str(self.module[name]))
@@ -149,4 +171,4 @@ def main():
         if not s:
             continue
         c = Compiler(s)
-        c.compile_module(parse(s))
+        c.compile_module(s)

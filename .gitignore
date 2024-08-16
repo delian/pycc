@@ -3,3 +3,9 @@ parser/parser.out
 parser/parsetab.py
 .vscode/
 *.ll
+.pycc_history
+*.pyc
+*.pyo
+*.pyd
+*.pyz
+*.pyw

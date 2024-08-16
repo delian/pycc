@@ -24,27 +24,40 @@ class Compiler:
             case "PROGRAM":
                 return self.compile(node.children[0], module=module)
             case "FUNCTIONS":
+                f1 = None
                 for child in node.children:
-                    self.compile(child, module=module)
+                    f1 = self.compile(child, module=module)
+                return f1
             case "FUNCTION":
                 fnty = ir.FunctionType(ir.IntType(32), [])
                 self.func.append(ir.Function(module, fnty, name=node.leaf))
                 self.f[node.leaf] = self.func[-1]
-                self.compile(node.children[0], module=module)
+                self.block.append(
+                    self.func[-1].append_basic_block(f"{node.leaf}_entry")
+                )
+                self.builder.append(ir.IRBuilder(self.block[-1]))
+                f2 = self.compile(node.children[0], name=name, module=module)
+                if f2:  # Builder has popped
+                    self.builder[-1].ret(f2)
+                else:
+                    self.builder[-1].ret(ir.Constant(ir.IntType(32), 0))
+                self.builder.pop()
+                self.block.pop()
+                return self.func[-1]
             case "BLOCK":
                 self.block.append(self.func[-1].append_basic_block())
                 self.builder.append(ir.IRBuilder(self.block[-1]))
-                self.compile(node.children[0], module=module)
-                self.builder[-1].ret(
-                    ir.Constant(ir.IntType(32), 33)
-                )  # I need to find a way to find the last expression for return value
+                b1 = self.compile(node.children[0], module=module)
                 self.builder.pop()
                 self.block.pop()
+                return b1
             case "STATEMENTS":
+                s1 = None
                 for child in node.children:
-                    self.compile(child, module=module)
+                    s1 = self.compile(child, module=module)
+                return s1
             case "STATEMENT":
-                self.compile(node.children[0], module=module)
+                return self.compile(node.children[0], module=module)
             case "VAR_DECLARE":
                 self.var[node.leaf] = self.builder[-1].alloca(
                     ir.IntType(32), name=node.leaf
@@ -52,6 +65,9 @@ class Compiler:
                 if len(node.children) > 0:
                     expr = self.compile(node.children[0], module=module)
                     self.builder[-1].store(expr, self.var[node.leaf])
+                    return self.var[
+                        node.leaf
+                    ]  # We shall see if we should return the store
             case "VAR_ASSIGN":
                 expr = self.compile(node.children[0], module=module)
                 self.builder[-1].store(expr, self.var[node.leaf])
@@ -83,6 +99,8 @@ class Compiler:
             case "NUMBER":
                 # breakpoint()
                 return ir.Constant(ir.IntType(32), int(node.leaf))
+            case "VAERIABLE":
+                return self.var[node.leaf]
 
     def compile_module(self, parsed, name="main"):
         print(parsed)

@@ -12,9 +12,10 @@ except FileNotFoundError:
 
 
 def save_history(h_len, histfile):
-    new_h_len = readline.get_current_history_length()
+    # new_h_len = readline.get_current_history_length()
     readline.set_history_length(1000)
-    readline.append_history_file(new_h_len - h_len, histfile)
+    # readline.append_history_file(new_h_len - h_len, histfile)  # Doesnt exist in OSX
+    readline.write_history_file(histfile)
 
 
 atexit.register(save_history, h_len, histfile)

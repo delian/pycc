@@ -13,7 +13,7 @@ class Node:
 
     def __str__(self):
         return (
-            f"{self.type}({', '.join(str(child) for child in self.children)})"
+            f"|{self.type},{self.leaf}|({', '.join(str(child) for child in self.children)})"
             if self.children
             else f"{self.type}({self.leaf})"
         )
@@ -22,6 +22,7 @@ class Node:
 def p_program(p):
     """program : functions
     | glob_variables ';' functions
+    |
     """
     p[0] = Node("PROGRAM", [p[1]])
 
@@ -42,12 +43,18 @@ def p_glob_variable(p):
 
 def p_functions(p):
     """functions : function
-    | functions ';' function"""
-    if len(p) == 2:
-        p[0] = Node("FUNCTIONS", [p[1]])
-    else:
-        p[0] = Node("FUNCTIONS", [p[1], p[3]])
-
+    | functions ';' function
+    | functions function
+    """
+    match len(p):
+        case 2:
+            p[0] = Node('FUNCTIONS', [p[1]])
+        case 3:
+            p[0] = Node('FUNCTIONS', [p[1], p[2]])
+        case 4:
+            p[0] = Node('FUNCTIONS', [p[1], p[3]])
+        case _:
+            raise SyntaxError(f'Incorrect function definition {p}')
 
 def p_function(p):
     """function : NAME '(' ')' block"""
@@ -152,7 +159,7 @@ def p_factor_expr(p):
 
 def p_factor_function_call(p):
     """factor : function_call"""
-    p[0] = Node("FUNCTION_CALL", [p[1]])
+    p[0] = Node("FACTOR_FUNCTION_CALL", [p[1]])
 
 
 # Error rule for syntax errors

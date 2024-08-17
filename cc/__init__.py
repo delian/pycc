@@ -97,6 +97,8 @@ class Compiler:
                 return self.compile(node.children[0], module=module)
             case "EXPRESSION":
                 return self.compile(node.children[0], module=module)
+            case "FACTOR_FUNCTION_CALL":
+                return self.compile(node.children[0], module=module)
             case "FUNCTION_CALL":
                 return self.builder[-1].call(self.f[node.leaf], [], tail="tail")
             case "NUMBER":

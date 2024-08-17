@@ -6,7 +6,7 @@ reserved = {
 
 tokens = ["NUMBER", "NAME"] + list(reserved.values())
 
-literals = ["=", "+", "-", "*", "/", "(", ")", "{", "}", ";", "$"]
+literals = ["=", "+", "-", "*", "/", "(", ")", "{", "}", ";", "$", "~"]
 
 t_ignore = " \t"
 t_ignore_COMMENT = r"\/\/.*"

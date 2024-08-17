@@ -140,11 +140,18 @@ def p_term_factor(p):
 def p_factor_num(p):
     """factor : NUMBER
     | '-' NUMBER
+    | '+' NUMBER
+    | '~' NUMBER
     """
-    if len(p) > 2:
-        p[0] = Node("NUMBER", leaf=-int(p[2]))
-    else:
-        p[0] = Node("NUMBER", leaf=p[1])
+    match len(p):
+        case 3:
+            match p[1]:
+                case '+':
+                    p[0] = Node("NUMBER", leaf=p[2])
+                case '-':
+                    p[0] = Node("NUMBER", leaf=-int(p[2]))
+                case '~':
+                    p[0] = Node("NUMBER", leaf=~int(p[2]))
 
 
 def p_factor_variable(p):

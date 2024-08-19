@@ -48,13 +48,14 @@ def p_functions(p):
     """
     match len(p):
         case 2:
-            p[0] = Node('FUNCTIONS', [p[1]])
+            p[0] = Node("FUNCTIONS", [p[1]])
         case 3:
-            p[0] = Node('FUNCTIONS', [p[1], p[2]])
+            p[0] = Node("FUNCTIONS", [p[1], p[2]])
         case 4:
-            p[0] = Node('FUNCTIONS', [p[1], p[3]])
+            p[0] = Node("FUNCTIONS", [p[1], p[3]])
         case _:
-            raise SyntaxError(f'Incorrect function definition {p}')
+            raise SyntaxError(f"Incorrect function definition {p}")
+
 
 def p_function(p):
     """function : NAME '(' ')' block"""
@@ -91,13 +92,13 @@ def p_statement(p):
 
 
 def p_comparision_expression(p):
-        """comp_expression : expression '>' expression
-        | expression '<' expression
-        | expression LEQ expression
-        | expression GEQ expression
-        | expression EQ expression
-        | expression NEQ expression
-        """
+    """comp_expression : expression '>' expression
+    | expression '<' expression
+    | expression LEQ expression
+    | expression GEQ expression
+    | expression EQ expression
+    | expression NEQ expression
+    """
     p[0] = Node("COMP_EXPRESSION", [p[1], p[3]], p[2])
 
 
@@ -157,11 +158,11 @@ def p_factor_num(p):
     match len(p):
         case 3:
             match p[1]:
-                case '+':
+                case "+":
                     p[0] = Node("NUMBER", leaf=p[2])
-                case '-':
+                case "-":
                     p[0] = Node("NUMBER", leaf=-int(p[2]))
-                case '~':
+                case "~":
                     p[0] = Node("NUMBER", leaf=~int(p[2]))
 
 

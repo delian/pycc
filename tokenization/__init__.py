@@ -4,10 +4,34 @@ reserved = {
     "let": "LET",
 }
 
-tokens = ["NUMBER", "NAME"] + list(reserved.values())
+tokens = ["NUMBER", "NAME", "EQ", "NEQ", "LEQ", "GEQ"] + list(reserved.values())
 
-literals = ["=", "+", "-", "*", "/", "(", ")", "{", "}", ";", "$", "~"]
+literals = [
+    "=",
+    "+",
+    "-",
+    "*",
+    "/",
+    "(",
+    ")",
+    "{",
+    "}",
+    ";",
+    "$",
+    "~",
+    "<",
+    ">",
+    "!",
+    "^",
+    "[",
+    "]",
+]
 
+
+t_EQ = r"=="
+t_NEQ = r"!="
+t_LEQ = r"<="
+t_GEQ = r">="
 t_ignore = " \t"
 t_ignore_COMMENT = r"\/\/.*"
 

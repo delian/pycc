@@ -90,6 +90,17 @@ def p_statement(p):
     p[0] = Node("STATEMENT", [p[1]])
 
 
+def p_comparision_expression(p):
+        """comp_expression : expression '>' expression
+        | expression '<' expression
+        | expression LEQ expression
+        | expression GEQ expression
+        | expression EQ expression
+        | expression NEQ expression
+        """
+    p[0] = Node("COMP_EXPRESSION", [p[1], p[3]], p[2])
+
+
 def p_var_declare(p):
     """var_declare : LET NAME
     | LET NAME '=' expression

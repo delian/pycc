@@ -106,6 +106,24 @@ class Compiler:
                 return ir.Constant(ir.IntType(32), int(node.leaf))
             case "VAERIABLE":
                 return self.var[node.leaf]
+            case "COMP_EXPRESSION":
+                left = self.compile(node.children[0], module=module)
+                right = self.compile(node.children[1], module=module)
+                match node.leaf:
+                    case "==":
+                        return self.builder[-1].icmp_signed("==", left, right)
+                    case "!=":
+                        return self.builder[-1].icmp_signed("!=", left, right)
+                    case "<=":
+                        return self.builder[-1].icmp_signed("<=", left, right)
+                    case ">=":
+                        return self.builder[-1].icmp_signed(">=", left, right)
+                    case "<":
+                        return self.builder[-1].icmp_signed("<", left, right)
+                    case ">":
+                        return self.builder[-1].icmp_signed(">", left, right)
+                    case _:
+                        raise NotImplementedError
 
     def compile_module(self, source, name="main"):
         parsed = parse(source)

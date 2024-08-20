@@ -86,9 +86,46 @@ def p_statement(p):
     """statement : var_declare
     | var_assign
     | expression
+    | if_statement
     | block
     """
     p[0] = Node("STATEMENT", [p[1]])
+
+
+def p_if_statement(p):
+    """if_statement : IF '(' comp_andor_expression ')' block
+    | IF '(' comp_andor_expression ')' block ELSE block
+    """
+    if len(p) == 6:
+        p[0] = Node("IF_STATEMENT", [p[3], p[5]])
+    else:
+        p[0] = Node("IF_ELSE_STATEMENT", [p[3], p[5], p[7]])
+
+
+def p_comparision_andor_expression(p):
+    """comp_andor_expression : comp_expression AND comp_expression
+    | comp_expression OR comp_expression
+    | comp_expression XOR comp_expression
+    | comp_expression OR not_expression
+    | not_expression OR comp_expression
+    | not_expression OR not_expression
+    | comp_expression AND not_expression
+    | not_expression AND comp_expression
+    | not_expression AND not_expression
+    | comp_expression XOR not_expression
+    | not_expression XOR comp_expression
+    | not_expression XOR not_expression
+    """
+    p[0] = Node("COMP_ANDOR_EXPRESSION", [p[1], p[3]], p[2])
+
+
+def p_not_expression(p):
+    """not_expression: '!' expression
+    | NOT expression
+    | '!' comp_expression
+    | NOT comp_expression
+    """
+    p[0] = Node("NOT_EXPRESSION", [p[2]], p[1])
 
 
 def p_comparision_expression(p):

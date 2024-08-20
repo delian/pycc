@@ -124,6 +124,61 @@ class Compiler:
                         return self.builder[-1].icmp_signed(">", left, right)
                     case _:
                         raise NotImplementedError
+            case "COMP_ANDOR_EXPRESSION":
+                left = self.compile(node.children[0], module=module)
+                right = self.compile(node.children[1], module=module)
+                match node.leaf:
+                    case "AND":
+                        return self.builder[-1].and_(left, right)
+                    case "OR":
+                        return self.builder[-1].or_(left, right)
+                    case "XOR":
+                        return self.builder[-1].xor(left, right)
+                    case _:
+                        raise NotImplementedError
+            case "NOT_EXPRESSION":
+                return self.builder[-1].not_(
+                    self.compile(node.children[0], module=module)
+                )
+            case "IF_STATEMENT":
+                cond = self.compile(node.children[0], module=module)
+                then_block = self.func[-1].append_basic_block(
+                    module.get_unique_name("then")
+                )
+                else_block = self.func[-1].append_basic_block(
+                    module.get_unique_name("else")
+                )
+                merge_block = self.func[-1].append_basic_block(
+                    module.get_unique_name("merge")
+                )
+                self.builder[-1].cbranch(cond, then_block, else_block)
+                self.builder[-1].position_at_end(then_block)
+                self.compile(node.children[1], module=module)
+                self.builder[-1].branch(merge_block)
+                self.builder[-1].position_at_end(else_block)
+                if len(node.children) > 2:
+                    self.compile(node.children[2], module=module)
+                self.builder[-1].branch(merge_block)
+                self.builder[-1].position_at_end(merge_block)
+            case "IF_ELSE_STATEMENT":
+                cond = self.compile(node.children[0], module=module)
+                then_block = self.func[-1].append_basic_block(
+                    module.get_unique_name("then")
+                )
+                else_block = self.func[-1].append_basic_block(
+                    module.get_unique_name("else")
+                )
+                merge_block = self.func[-1].append_basic_block(
+                    module.get_unique_name("merge")
+                )
+                self.builder[-1].cbranch(cond, then_block, else_block)
+                self.builder[-1].position_at_end(then_block)
+                self.compile(node.children[1], module=module)
+                self.builder[-1].branch(merge_block)
+                self.builder[-1].position_at_end(else_block)
+                self.compile(node.children[2], module=module)
+                self.builder[-1].branch(merge_block)
+                self.builder[-1].position_at_end(merge_block)
 
     def compile_module(self, source, name="main"):
         parsed = parse(source)

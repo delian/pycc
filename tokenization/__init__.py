@@ -2,6 +2,11 @@ __all__ = ["tokens"]
 
 reserved = {
     "let": "LET",
+    "and": "AND",
+    "or": "OR",
+    "xor": "XOR",
+    "if": "IF",
+    "else": "ELSE",
 }
 
 tokens = ["NUMBER", "NAME", "EQ", "NEQ", "LEQ", "GEQ"] + list(reserved.values())

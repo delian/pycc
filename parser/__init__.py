@@ -164,6 +164,8 @@ def p_factor_num(p):
                     p[0] = Node("NUMBER", leaf=-int(p[2]))
                 case "~":
                     p[0] = Node("NUMBER", leaf=~int(p[2]))
+        case 2:
+            p[0] = Node("NUMBER", leaf=p[1])
 
 
 def p_factor_variable(p):

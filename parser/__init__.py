@@ -3,20 +3,7 @@ import tokenization
 import ply.yacc as yacc
 from tokenization import tokens
 import history
-
-
-class Node:
-    def __init__(self, type, children=None, leaf=None):
-        self.type = type
-        self.children = children if children is not None else []
-        self.leaf = leaf
-
-    def __str__(self):
-        return (
-            f"|{self.type},{self.leaf}|({', '.join(str(child) for child in self.children)})"
-            if self.children
-            else f"{self.type}({self.leaf})"
-        )
+from node import Node
 
 
 def p_program(p):
@@ -90,11 +77,10 @@ def p_statement(p):
 
 
 def p_compl_expression(p):
-    """compl_expression: var_assign
+    """compl_expression : var_assign
     | expression
     | if_statement
     | block
-    | function_call
     | comp_andor_expression
     | comp_expression
     | bitwise_expression
@@ -129,13 +115,19 @@ def p_comparision_andor_expression(p):
     p[0] = Node("COMP_ANDOR_EXPRESSION", [p[1], p[3]], p[2])
 
 
+def p_bitwise_expression(p):
+    """bitwise_expression : expression '&' expression"""
+    p[0] = Node("BITWISE_EXPRESSION", [p[1], p[3]], p[2])
+
+
 def p_not_expression(p):
-    """not_expression: '!' expression
+    """not_expression : '!' expression
     | NOT expression
     | '!' comp_expression
     | NOT comp_expression
     """
     p[0] = Node("NOT_EXPRESSION", [p[2]], p[1])
+    pass
 
 
 def p_comparision_expression(p):

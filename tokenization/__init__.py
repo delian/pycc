@@ -7,6 +7,7 @@ reserved = {
     "xor": "XOR",
     "if": "IF",
     "else": "ELSE",
+    "not": "NOT",
 }
 
 tokens = ["NUMBER", "NAME", "EQ", "NEQ", "LEQ", "GEQ"] + list(reserved.values())

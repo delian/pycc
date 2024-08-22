@@ -91,6 +91,10 @@ class Compiler:
                 left = self.compile(node.children[0], module=module)
                 right = self.compile(node.children[1], module=module)
                 return self.builder[-1].sdiv(left, right)
+            case "MODULO":
+                left = self.compile(node.children[0], module=module)
+                right = self.compile(node.children[1], module=module)
+                return self.builder[-1].srem(left, right)
             case "TERM":
                 return self.compile(node.children[0], module=module)
             case "FACTOR":
@@ -136,6 +140,8 @@ class Compiler:
                         return self.builder[-1].xor(left, right)
                     case _:
                         raise NotImplementedError
+            case "COMPL_EXPRESSION":
+                return self.compile(node.children[0], module=module)
             case "NOT_EXPRESSION":
                 return self.builder[-1].not_(
                     self.compile(node.children[0], module=module)

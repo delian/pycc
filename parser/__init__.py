@@ -84,12 +84,22 @@ def p_statements(p):
 
 def p_statement(p):
     """statement : var_declare
-    | var_assign
+    | compl_expression
+    """
+    p[0] = Node("STATEMENT", [p[1]])
+
+
+def p_compl_expression(p):
+    """compl_expression: var_assign
     | expression
     | if_statement
     | block
+    | function_call
+    | comp_andor_expression
+    | comp_expression
+    | bitwise_expression
     """
-    p[0] = Node("STATEMENT", [p[1]])
+    p[0] = Node("COMPL_EXPRESSION", [p[1]])
 
 
 def p_if_statement(p):
@@ -174,6 +184,8 @@ def p_expression(p):
             p[0] = Node("MULTIPLY", [p[1], p[3]], p[2])
         case "/":
             p[0] = Node("DIVIDE", [p[1], p[3]], p[2])
+        case "%":
+            p[0] = Node("MODULO", [p[1], p[3]], p[2])
 
 
 def p_expression_term(p):
@@ -211,7 +223,7 @@ def p_factor_variable(p):
 
 
 def p_factor_expr(p):
-    """factor : '(' expression ')'"""
+    """factor : '(' compl_expression ')'"""
     p[0] = Node("EXPRESSION", [p[2]])
 
 

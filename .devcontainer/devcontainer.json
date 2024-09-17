@@ -3,10 +3,14 @@
 {
 	"name": "Pycc",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/base:noble",
+	// "image": "mcr.microsoft.com/devcontainers/base:noble",
 	"features": {
 		"ghcr.io/rio/features/chezmoi:1": {}
 	},
+    "build" : {
+        "dockerfile": "Dockerfile",
+       // "context": ".."
+    },
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -41,7 +45,7 @@
 				"elagil.pre-commit-helper",
 				"MarkLarah.pre-commit-vscode",
 				"ms-python.vscode-pylance",
-				"ms-python.python",
+				"ms-python.python", 
 				"ms-python.debugpy",
 				"donjayamanne.python-environment-manager",
 				"donjayamanne.python-extension-pack",
@@ -63,10 +67,6 @@
 	// Configure tool-specific properties.
 	// "customizations": {},
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root",
-	"postCreateCommand": "sudo apt update && sudo apt upgrade -y && sudo apt install -y git zsh tmux vim python3 python-is-python3 python3-poetry pre-commit llvm clang make tmux fish && chezmoi init --apply --depth=1 delian/chezmoi",
-	// "containerUser": "delian",
 	// "updateRemoteUserUID": true,
-	// "workspaceMount": "source=${localWorkspaceFolder}/,target=/workspace,type=bind,consistency=cached",
-	// "workspaceFolder": "/workspace",
+	"postCreateCommand": "chezmoi init --apply --depth=1 delian/chezmoi",
 }

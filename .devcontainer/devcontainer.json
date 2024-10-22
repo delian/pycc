@@ -45,7 +45,7 @@
 				"elagil.pre-commit-helper",
 				"MarkLarah.pre-commit-vscode",
 				"ms-python.vscode-pylance",
-				"ms-python.python", 
+				"ms-python.python",
 				"ms-python.debugpy",
 				"donjayamanne.python-environment-manager",
 				"donjayamanne.python-extension-pack",
@@ -58,7 +58,8 @@
 				"be5invis.toml",
 				"vscodevim.vim",
 				"pflannery.vscode-versionlens",
-				"redhat.vscode-yaml"
+				"redhat.vscode-yaml",
+				"asvetliakov.vscode-neovim"
 			]
 		}
 	},

@@ -6,9 +6,7 @@ import history
 
 
 class Compiler:
-    def __init__(self, source):
-        self.source = source
-        self.parsed = parse(source)
+    def __init__(self):
         self.builder = []
         self.triple = llvm.get_default_triple()
         self.module = {}
@@ -257,5 +255,5 @@ def main():
             break
         if not s:
             continue
-        c = Compiler(s)
+        c = Compiler()
         c.compile_module(s)
